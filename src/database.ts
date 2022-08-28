@@ -14,15 +14,13 @@ export class DataBaseService {
 
       const authInstance = getAuth();
 
-      signInWithEmailAndPassword(authInstance, auth.email, auth.password)
-        .then((userCredential) => {
-          console.log(userCredential.user);
-        })
-        .catch((error) => {
+      signInWithEmailAndPassword(authInstance, auth.email, auth.password).catch(
+        (error) => {
           const { code, message } = error;
 
           console.log(`${code}: ${message}`);
-        });
+        },
+      );
 
       this.db = getDatabase(this.app);
     } catch (error) {
