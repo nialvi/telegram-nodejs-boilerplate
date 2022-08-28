@@ -23,3 +23,8 @@ If you add new env variables, you will need to map env variables to a config obj
 - telegraf
 - firebase
 - log4js
+
+## Todos
+
+[ ] - create build folder before first run `npm run dev`
+[ ] - fix TS warnings on `node_modules/@firebase/auth/`
