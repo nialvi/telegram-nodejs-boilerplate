@@ -20,6 +20,7 @@ If you add new env variables, you will need to map env variables to a config obj
 
 - nodejs
 - typescript
+- inversify
 - telegraf
 - firebase
 - log4js

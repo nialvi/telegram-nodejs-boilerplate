@@ -1,32 +1,23 @@
-import { Scenes, Telegraf } from 'telegraf';
-import { getConfig } from './config/index.js';
-import { DataBaseService } from './database.js';
-import log4js from 'log4js';
+import 'reflect-metadata';
 
-const logger = log4js.getLogger();
-logger.level = 'debug';
+import { container, TYPES } from './composition/index.js';
 
-const main = async (config: AppConfig): Promise<void> => {
-	const bot = new Telegraf<Scenes.SceneContext>(config.botToken);
-	const db = new DataBaseService(config);
+import { Application } from './app/index.js';
+import { Logger } from './logger/index.js';
 
-	bot.launch();
-	logger.info('BOT IS STARTED 🚀');
+const logger = container.get<Logger>(TYPES.Logger);
 
-	bot.on('text', (ctx) => {
-		logger.info('action text', ctx.update.message);
+const main = async (): Promise<void> => {
+	try {
+		const app = container.get<Application>(TYPES.App);
 
-		db.writeMessage(ctx.update.message.text, ctx.update.message.date);
+		app.start();
 
-		ctx.reply('Hello!');
-	});
-
-	process.once('SIGINT', () => bot.stop('SIGINT'));
-	process.once('SIGTERM', () => bot.stop('SIGTERM'));
+		process.once('SIGINT', () => app.stop('SIGINT'));
+		process.once('SIGTERM', () => app.stop('SIGTERM'));
+	} catch (error) {
+		logger.error('Application not running:', error);
+	}
 };
 
-getConfig()
-	.then((config) => {
-		main(config);
-	})
-	.catch((error) => logger.error('Application not running', error));
+main().catch((error) => logger.error('Application not running', error));
